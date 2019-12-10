@@ -102,7 +102,7 @@ function doJoin(query, scope, h) {
 			//			console.log(h,opt,source.data,i,source.dontcache);
 			while (
 				(dataw = data[i]) ||
-				(!opt && (source.getfn && (dataw = source.getfn(i)))) ||
+				(!opt && source.getfn && (dataw = source.getfn(i))) ||
 				i < ilen
 			) {
 				if (!opt && source.getfn && !source.dontcache) data[i] = dataw;

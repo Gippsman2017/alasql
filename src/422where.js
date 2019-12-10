@@ -78,7 +78,7 @@ function optimizeWhereJoin(query, ast) {
 		var src = fsrc[0]; // optmiization source
 		src.srcwherefns = src.srcwherefns ? src.srcwherefns + '&&' + s : s;
 
-		if (ast instanceof yy.Op && (ast.op == '=' && !ast.allsome)) {
+		if (ast instanceof yy.Op && ast.op == '=' && !ast.allsome) {
 			if (ast.left instanceof yy.Column) {
 				var ls = ast.left.toJS('p', query.defaultTableid, query.defcols);
 				var rs = ast.right.toJS('p', query.defaultTableid, query.defcols);

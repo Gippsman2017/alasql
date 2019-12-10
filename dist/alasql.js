@@ -1,7 +1,7 @@
-//! AlaSQL v0.5.1-develop-9afc9193undefined | © 2014-2018 Andrey Gershun & Mathias Rangel Wulff | License: MIT
+//! AlaSQL v0.5.1-develop-882f0b87undefined | © 2014-2018 Andrey Gershun & Mathias Rangel Wulff | License: MIT
 /*
 @module alasql
-@version 0.5.1-develop-9afc9193undefined
+@version 0.5.1-develop-882f0b87undefined
 
 AlaSQL - JavaScript SQL database
 © 2014-2016	Andrey Gershun & Mathias Rangel Wulff
@@ -142,7 +142,7 @@ var alasql = function(sql, params, cb, scope) {
 	Current version of alasql 
  	@constant {string} 
 */
-alasql.version = '0.5.1-develop-9afc9193undefined';
+alasql.version = '0.5.1-develop-882f0b87undefined';
 
 /**
 	Debug flag
@@ -4026,7 +4026,7 @@ var deepEqual = (utils.deepEqual = function(x, y) {
 		return true;
 	}
 
-	if (typeof x === 'object' && null !== x && (typeof y === 'object' && null !== y)) {
+	if (typeof x === 'object' && null !== x && typeof y === 'object' && null !== y) {
 		if (Object.keys(x).length !== Object.keys(y).length) {
 			return false;
 		}
@@ -7524,7 +7524,7 @@ function doJoin(query, scope, h) {
 
 			while (
 				(dataw = data[i]) ||
-				(!opt && (source.getfn && (dataw = source.getfn(i)))) ||
+				(!opt && source.getfn && (dataw = source.getfn(i))) ||
 				i < ilen
 			) {
 				if (!opt && source.getfn && !source.dontcache) data[i] = dataw;
@@ -7896,7 +7896,7 @@ yy.Select.prototype.compile = function(databaseid, params) {
 	if (this.pivot) query.pivotfn = this.compilePivot(query);
 	if (this.unpivot) query.pivotfn = this.compileUnpivot(query);
 
-	// 10. Compile TOP/LIMIT/OFFSET/FETCH cleuse
+	// 10. Compile TOP/LIMIT/OFFSET/FETCH clause
 	if (this.top) {
 		query.limit = this.top.value;
 	} else if (this.limit) {
@@ -8990,7 +8990,7 @@ function optimizeWhereJoin(query, ast) {
 		var src = fsrc[0]; // optmiization source
 		src.srcwherefns = src.srcwherefns ? src.srcwherefns + '&&' + s : s;
 
-		if (ast instanceof yy.Op && (ast.op == '=' && !ast.allsome)) {
+		if (ast instanceof yy.Op && ast.op == '=' && !ast.allsome) {
 			if (ast.left instanceof yy.Column) {
 				var ls = ast.left.toJS('p', query.defaultTableid, query.defcols);
 				var rs = ast.right.toJS('p', query.defaultTableid, query.defcols);
@@ -14969,7 +14969,11 @@ yy.Delete.prototype.compile = function(databaseid) {
 				);
 			}
 
-			if (alasql.options.autocommit && db.engineid && db.engineid == 'LOCALSTORAGE') {
+			if (
+				alasql.options.autocommit &&
+				db.engineid &&
+				(db.engineid == 'LOCALSTORAGE' || db.engineid == 'FILESTORAGE')
+			) {
 				alasql.engines[db.engineid].loadTableData(databaseid, tableid);
 			}
 
@@ -15004,7 +15008,11 @@ yy.Delete.prototype.compile = function(databaseid) {
 			}
 
 			var res = orignum - table.data.length;
-			if (alasql.options.autocommit && db.engineid && db.engineid == 'LOCALSTORAGE') {
+			if (
+				alasql.options.autocommit &&
+				db.engineid &&
+				(db.engineid == 'LOCALSTORAGE' || db.engineid == 'FILESTORAGE')
+			) {
 				alasql.engines[db.engineid].saveTableData(databaseid, tableid);
 			}
 

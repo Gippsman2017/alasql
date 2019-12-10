@@ -1014,7 +1014,7 @@ var deepEqual = (utils.deepEqual = function(x, y) {
 		return true;
 	}
 
-	if (typeof x === 'object' && null !== x && (typeof y === 'object' && null !== y)) {
+	if (typeof x === 'object' && null !== x && typeof y === 'object' && null !== y) {
 		if (Object.keys(x).length !== Object.keys(y).length) {
 			return false;
 		}
