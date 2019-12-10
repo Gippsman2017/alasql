@@ -1,11 +1,10 @@
 {
-  "name": "alasql-nr",
-  "description": "Forked Alasql for Node-Red enhancements Use SQL to select and filter javascript data - including relational joins and search in nested objects (JSON). Export to and import from Excel and CSV",
+  "name": "alasql",
+  "description": "Use SQL to select and filter javascript data - including relational joins and search in nested objects (JSON). Export to and import from Excel and CSV",
   "version": "0.5.2",
   "author": "Andrey Gershun <agershun@gmail.com>",
   "contributors": [
-    "Original - Mathias Rangel Wulff <m@rawu.dk>",
-    "Gippsman2017"
+    "Mathias Rangel Wulff <m@rawu.dk>"
   ],
   "main": "dist/alasql.fs.js",
   "browser": "dist/alasql.min.js",
