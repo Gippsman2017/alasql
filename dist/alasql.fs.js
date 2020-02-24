@@ -11567,12 +11567,14 @@ yy.Select.prototype.exec = function(params, cb) {
 	statement.sql = sql;
 	statement.dbversion = db.dbversion;
 
-	// Secure sqlCache size
-	if (db.sqlCacheSize > alasql.MAXSQLCACHESIZE) {
-		db.resetSqlCache();
+	if (alasql.options.cache) {
+		// Secure sqlCache size
+		if (db.sqlCacheSize > alasql.MAXSQLCACHESIZE) {
+			db.resetSqlCache();
+		}
+		db.sqlCacheSize++;
+		db.sqlCache[hh] = statement;
 	}
-	db.sqlCacheSize++;
-	db.sqlCache[hh] = statement;
 	var res = (alasql.res = statement(params, cb));
 	return res;
 };
@@ -12979,6 +12981,15 @@ yy.CreateTable.prototype.execute = function(databaseid, params, cb) {
 	//	}
 	//			if(table.pk) {
 
+	function getTriggerFunctionId(trigger) {
+		if (trigger.funcid) {
+			return trigger.funcid;
+		} else if (trigger.statement && trigger.statement.expression) {
+			return trigger.statement.expression.funcid;
+		}
+		return null;
+	}
+
 	table.insert = function(r, orreplace) {
 		var oldinserted = alasql.inserted;
 		alasql.inserted = [r];
@@ -13112,16 +13123,16 @@ yy.CreateTable.prototype.execute = function(databaseid, params, cb) {
 		}
 
 		// Trigger prevent functionality
-		for (var tr in table.afterinsert) {
-			var trigger = table.afterinsert[tr];
+		table.afterinsert.forEach(function (trigger) {
 			if (trigger) {
-				if (trigger.funcid) {
-					alasql.fn[trigger.funcid](r);
+				var triggerFunctionId = getTriggerFunctionId(trigger);
+				if (triggerFunctionId && alasql.fn[triggerFunctionId]) {
+					alasql.fn[triggerFunctionId](r);
 				} else if (trigger.statement) {
 					trigger.statement.execute(databaseid);
 				}
 			}
-		}
+		});
 		alasql.inserted = oldinserted;
 	};
 
