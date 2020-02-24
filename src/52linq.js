@@ -26,12 +26,14 @@ yy.Select.prototype.exec = function(params, cb) {
 	statement.sql = sql;
 	statement.dbversion = db.dbversion;
 
-	// Secure sqlCache size
-	if (db.sqlCacheSize > alasql.MAXSQLCACHESIZE) {
-		db.resetSqlCache();
+	if (alasql.options.cache) {
+		// Secure sqlCache size
+		if (db.sqlCacheSize > alasql.MAXSQLCACHESIZE) {
+			db.resetSqlCache();
+		}
+		db.sqlCacheSize++;
+		db.sqlCache[hh] = statement;
 	}
-	db.sqlCacheSize++;
-	db.sqlCache[hh] = statement;
 	var res = (alasql.res = statement(params, cb));
 	return res;
 };
